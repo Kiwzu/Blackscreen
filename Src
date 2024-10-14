@@ -60,26 +60,16 @@ while true do
 end
 
 -- Jump functionality
-local RunService = game:GetService("RunService")
-local jumpCooldown = 60 -- Jump interval (60 seconds)
-local lastJumpTime = 0
+local player = game.Players.LocalPlayer
+local VirtualUser = game:GetService("VirtualUser")
 
--- Function for jumping
-local function simulateJump()
-    local currentTime = tick()
-
-    if currentTime - lastJumpTime >= jumpCooldown then
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-
-        if humanoid then
-            humanoid:ChangeState(Enum.HumanoidStateType.Jumping) -- Make the character jump
-            lastJumpTime = currentTime
-        end
-    end
+-- Function to simulate user activity
+local function onIdled()
+    -- Capture the controller to prevent being kicked
+    VirtualUser:CaptureController()
+    -- Simulate a mouse click
+    VirtualUser:ClickButton2(Vector2.new())
 end
 
--- Run the simulateJump function on every frame
-RunService.RenderStepped:Connect(function()
-    simulateJump()
-end)
+-- Connect the Idled event to the onIdled function
+player.Idled:Connect(onIdled)
