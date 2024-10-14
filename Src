@@ -25,7 +25,7 @@ local unwantedMessages = {
     "voted to play 'Retry'",
     "You need more yen",
     "Not Enough Money",
-    "You need more", -- For messages like "You need ... ¥ more to place this unit"
+    "You need more YEN", -- For messages like "You need ... ¥ more to place this unit"
     "You can only place 6 of this unit", -- Previously added message
     "Unit has reached max upgrade" -- New message added
 }
@@ -63,38 +63,32 @@ while true do
 end
 
 
-local player = game.Players.LocalPlayer
-local userInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
--- Function to perform a small action to prevent AFK
-local function preventAFK()
-    while true do
-        wait(60) -- Wait for 60 seconds before performing the action
-        if player.Character and player.Character:FindFirstChild("Humanoid") then
-            player.Character.Humanoid.Jump = true -- Make the player jump
+local jumpCooldown = 60 -- เวลาระหว่างกระโดด (60 วินาที)
+local lastJumpTime = 0
+
+-- ฟังก์ชันสำหรับกระโดด
+local function simulateJump()
+    local currentTime = tick()
+    
+    if currentTime - lastJumpTime >= jumpCooldown then
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+        if humanoid then
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping) -- ทำให้ตัวละครกระโดด
+            lastJumpTime = currentTime
         end
     end
 end
 
--- Start the prevent AFK function
-preventAFK()
-
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
--- สร้าง ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "BlackScreenGui"
-screenGui.Parent = playerGui
-
--- สร้าง Frame ที่เป็นสีดำครอบคลุมหน้าจอและใหญ่กว่าขอบ
-local blackFrame = Instance.new("Frame")
-blackFrame.Size = UDim2.new(1.5, 0, 1.5, 0) -- ขยายใหญ่กว่า 1.5 เท่าของหน้าจอ
-blackFrame.Position = UDim2.new(-0.25, 0, -0.25, 0) -- ตำแหน่งเป็นศูนย์กลางแบบขยายออก
-blackFrame.BackgroundColor3 = Color3.new(0, 0, 0) -- สีดำ
-blackFrame.BorderSizePixel = 0 -- ไม่มีขอบ
-blackFrame.BackgroundTransparency = 0 -- ทึบทั้งหมด
-blackFrame.Parent = screenGui
+-- รันฟังก์ชัน simulateJump ในทุก ๆ เฟรม
+RunService.RenderStepped:Connect(function()
+    simulateJump()
+end)
 
 
 
