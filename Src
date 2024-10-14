@@ -1,0 +1,101 @@
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- สร้าง ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BlackScreenGui"
+screenGui.Parent = playerGui
+
+-- สร้าง Frame ที่เป็นสีดำครอบคลุมหน้าจอและใหญ่กว่าขอบ
+local blackFrame = Instance.new("Frame")
+blackFrame.Size = UDim2.new(1.5, 0, 1.5, 0) -- ขยายใหญ่กว่า 1.5 เท่าของหน้าจอ
+blackFrame.Position = UDim2.new(-0.25, 0, -0.25, 0) -- ตำแหน่งเป็นศูนย์กลางแบบขยายออก
+blackFrame.BackgroundColor3 = Color3.new(0, 0, 0) -- สีดำ
+blackFrame.BorderSizePixel = 0 -- ไม่มีขอบ
+blackFrame.BackgroundTransparency = 0 -- ทึบทั้งหมด
+blackFrame.Parent = screenGui
+
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Define unwanted messages in a table for easier management
+local unwantedMessages = {
+    "Cannot fit unit here!",
+    "voted to play 'Retry'",
+    "You need more yen",
+    "Not Enough Money",
+    "You need more", -- For messages like "You need ... ¥ more to place this unit"
+    "You can only place 6 of this unit", -- Previously added message
+    "Unit has reached max upgrade" -- New message added
+}
+
+-- Function to check if a message is unwanted
+local function isUnwantedMessage(text)
+    for _, message in ipairs(unwantedMessages) do
+        if text:find(message) then
+            return true
+        end
+    end
+    return false
+end
+
+-- Function to remove unwanted messages
+local function removeMessages()
+    -- Loop through all GUI elements and remove the specified text and their backgrounds
+    for _, guiObject in ipairs(playerGui:GetDescendants()) do
+        if guiObject:IsA("TextLabel") and isUnwantedMessage(guiObject.Text) then
+            -- Check if it has a parent Frame or other container, and remove it
+            local parentFrame = guiObject.Parent
+            if parentFrame:IsA("Frame") then
+                parentFrame:Destroy() -- Remove the frame with the text
+            else
+                guiObject:Destroy() -- Remove just the text label
+            end
+        end
+    end
+end
+
+-- Continuously check every 0.1 seconds
+while true do
+    removeMessages() -- Call the function to remove the messages
+    wait(0.1) -- Wait for 0.1 seconds before running again
+end
+
+
+local player = game.Players.LocalPlayer
+local userInputService = game:GetService("UserInputService")
+
+-- Function to perform a small action to prevent AFK
+local function preventAFK()
+    while true do
+        wait(60) -- Wait for 60 seconds before performing the action
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.Jump = true -- Make the player jump
+        end
+    end
+end
+
+-- Start the prevent AFK function
+preventAFK()
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- สร้าง ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BlackScreenGui"
+screenGui.Parent = playerGui
+
+-- สร้าง Frame ที่เป็นสีดำครอบคลุมหน้าจอและใหญ่กว่าขอบ
+local blackFrame = Instance.new("Frame")
+blackFrame.Size = UDim2.new(1.5, 0, 1.5, 0) -- ขยายใหญ่กว่า 1.5 เท่าของหน้าจอ
+blackFrame.Position = UDim2.new(-0.25, 0, -0.25, 0) -- ตำแหน่งเป็นศูนย์กลางแบบขยายออก
+blackFrame.BackgroundColor3 = Color3.new(0, 0, 0) -- สีดำ
+blackFrame.BorderSizePixel = 0 -- ไม่มีขอบ
+blackFrame.BackgroundTransparency = 0 -- ทึบทั้งหมด
+blackFrame.Parent = screenGui
+
+
+
+
